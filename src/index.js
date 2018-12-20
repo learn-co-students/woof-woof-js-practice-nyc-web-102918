@@ -2,21 +2,23 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
   let allPups = []
   let foundPup = ''
+  let goodPups = ''
   const dogBar = document.querySelector('#dog-bar')
   const dogInfo = document.querySelector('#dog-info')
+  const dogFilterButton = document.querySelector('#good-dog-filter')
 
   function fetchPups() {
     fetch('http://localhost:3000/pups')
     .then((r) => r.json())
     .then((data) => {
       allPups = data
-      showAllPops(data)
+      showAllPups(data)
     })
   }
 
   fetchPups()
 
-  function showAllPops(pups) {
+  function showAllPups(pups) {
     dogBar.innerHTML += pups.map(renderSinglePup).join(' ')
   }
 
@@ -72,11 +74,27 @@ document.addEventListener('DOMContentLoaded', (e) => {
         })
       }
     })
-
   })
 
+  dogFilterButton.addEventListener('click', (e) => {
+    if (e.target.innerHTML === 'Filter good dogs: OFF') {
+        e.target.innerHTML = 'Filter good dogs: ON'
+        showAllGoodPups()
 
+    }
+    else {
+      e.target.innerHTML = 'Filter good dogs: OFF'
+      dogBar.innerHTML = ''
+      showAllPups(allPups)
+    }
+  })
 
-
+  function showAllGoodPups() {
+    goodPups = allPups.filter((pup) => {
+      return pup.isGoodDog === true
+    })
+    dogBar.innerHTML = ''
+    showAllPups(goodPups)
+  }
 
 })
